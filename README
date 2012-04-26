@@ -55,12 +55,12 @@ Search Engine Usage
 
 	An admin user must be set manually in the database after said user has
 	registered as a normal user. Visit /admin to access administrator settings
-	like entering a new seed to crawl or shutting down the server. It will check
-	if the user entered a seed and if that seed is a valid url before crawling.
-	If the user is not logged in it will redirect to the Login page, and if a 
-	logged in user is not an administrator, it will redirect to the Search page.
-	A link to this page is provided to logged in admin users in the top right 
-	corner.
+	like entering a new seed to crawl or shutting down the server. It will 
+	check if the user entered a seed and if that seed is a valid url before 
+	crawling. If the user is not logged in it will redirect to the Login page, 
+	and if a logged in user is not an administrator, it will redirect to the 
+	Search page. A link to this page is provided to logged in admin users in 
+	the top right corner.
 	
 - Account
 
@@ -107,8 +107,8 @@ Additional Features
                  which result pages have been visited by that user. 
                  
 - Administrator Interface @ /admin
-	- New Crawl: Allows the administrator to enter a new seed URL to crawl. The 
-	             results are added to the inverted index.
+	- New Crawl: Allows the administrator to enter a new seed URL to crawl. 
+	             The results are added to the inverted index.
 	- Server Shutdown: Allows the admin to gracefully shutdown the web server.
 	
 - Advanced Search Options
