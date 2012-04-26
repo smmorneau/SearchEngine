@@ -1,0 +1,182 @@
+Author:       Steely Morneau
+Project:      SearchEngine
+Last updated: December 2011
+-----------------------------
+
+Summary
+
+A Java application that crawls a specified seed web page (and unique resulting 
+    pages), builds an inverted index, and starts a search engine for a website 
+    that provides services including: weighed partial search capability, 
+    authentication of users, and a history of each user's prior searches.
+
+This is a customizable multi-threaded search engine application that uses
+- an inverted index to store the keywords
+- Jetty as a web server and servlet handler
+- servlets to create a dynamic webpage to process requests
+- sockets for HTTP requests
+- cookies to login users
+- JDBC and SQL to store info such as username, password, search history, page 
+    snippets
+- HTML and CSS for the UI
+
+ 
+
+
+Search Engine Usage
+
+- Login
+
+	Visit /login to login as a specific user that has already been registered.
+	If a user is already logged in, it will redirect to the Search page. Users
+	can logout by visiting the link in the top right corner. Logging out will
+	clear all cookies set by the server.
+
+- Register 
+
+	Visit /register to register a new user. Cannot register with a username 
+	that has already been taken. If a logged in user tries to visit the 
+	register page, it will redirect to the Account page.
+
+- Search
+
+	Visit /search to search for a query in the inverted index. There is a
+	checkbox for the user to turn off partial search before the user hits the
+	search button. There is also a message to the user letting him/her know
+	whether private search is on or off, and a link to change this setting on
+	the account page. If the user is not logged in, it will redirect to the
+	Login page. A link to this page is provided to logged in users in the top 
+	right corner.
+	
+	Search results are output as links with the domain name and a page
+	snippets of decoded HTML.
+
+- Admin
+
+	An admin user must be set manually in the database after said user has
+	registered as a normal user. Visit /admin to access administrator settings
+	like entering a new seed to crawl or shutting down the server. It will check
+	if the user entered a seed and if that seed is a valid url before crawling.
+	If the user is not logged in it will redirect to the Login page, and if a 
+	logged in user is not an administrator, it will redirect to the Search page.
+	A link to this page is provided to logged in admin users in the top right 
+	corner.
+	
+- Account
+
+	Visit /account to change account settings. Here the user can change his/her
+	current password by entering the correct current password and a new password
+	that is different from the current password. This page also allows the user
+	to clear the search query history and/or the visited links history. It will
+	also tell the user whether private search (where queries and visited links
+	are not saved) is on or off, and allows the user to change this mode. If 
+	the user is not logged in, it will redirect to the Login page. A link to 
+	this page is provided to logged in users in the top right corner.
+
+- History
+
+	Visit /history to view the search query history. Search queries can be
+	cleared by visiting the account page, and private search will stop the
+	server from saving query history. If the user is not logged in, it will 
+	redirect to the Login page. A link to this page is provided to logged in 
+	users in the top right corner.
+
+- Visited
+
+	Visit /visited to view the visited links. Every time a user visits a search
+	result, the will be redirected to /redirect which will save the url in the
+	database and redirect the user to the requested link. Visited links can be
+	cleared by visiting the account page, and private search will stop the
+	server from saving visited links. If the user is not logged in, it will 
+	redirect to the Login page. A link to this page is provided to logged in 
+	users in the top right corner. If a logged in user tries to visit 
+	/redirect, it will redirect to the Visited page, and if a user that is not
+	logged in, it will redirect to the Login page.
+
+
+
+
+
+Additional Features
+
+- Page Snippet:  The search results display a snippet (2-3 lines) of the 
+                 resulting page. For performance reasons, these snippets 
+                 are stored in a mySQL database when the page is crawled.
+                  
+- Visited Pages: In addition to tracking a user's search history, also stores 
+                 which result pages have been visited by that user. 
+                 
+- Administrator Interface @ /admin
+	- New Crawl: Allows the administrator to enter a new seed URL to crawl. The 
+	             results are added to the inverted index.
+	- Server Shutdown: Allows the admin to gracefully shutdown the web server.
+	
+- Advanced Search Options
+	- Partial Search Toggle: Allows the user to toggle on/off partial search.
+	
+- Search Brand
+	- A grey/blue color scheme with Arial font
+	  	See: http://cs.usfca.edu/~smmorneau/cs212/homework05/style.css
+	- User info and links to pages are in top right corner
+	
+- Time Stamps on Search History
+
+- Private Search: Allows users to set an option that turns off the search 
+                  history feature.
+
+- Search Statistics: Displays the total number of results along with the time 
+                     it took to calculate and fetch those results.
+
+
+
+	
+	
+Database Setup
+
+CREATE TABLE users (
+  userid INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  user VARCHAR(20) NOT NULL,
+  password CHAR(32) NOT NULL,
+  admin INT(11) NOT NULL DEFAULT '0'
+);
+
+CREATE TABLE history (
+  user VARCHAR(20) NOT NULL DEFAULT '',
+  query VARCHAR(255) NOT NULL DEFAULT '',
+  time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE visited (
+  user VARCHAR(20) NOT NULL DEFAULT '',
+  url VARCHAR(255) NOT NULL DEFAULT '',
+  time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE snippets (
+  url VARCHAR(255) NOT NULL,
+  snippet TEXT NOT NULL
+);
+
+[After registering a user, to make them admin]
+UPDATE users SET admin=1 WHERE user='<username>';
+
+
+
+
+Database Configuration
+
+[See database.properties file]	
+
+
+
+	
+Included Libraries and Files
+
+- log4j
+- jetty
+- junit
+- org.apache.commons.lang
+- jdbc
+
+- database.properties
+- log4j.properties
